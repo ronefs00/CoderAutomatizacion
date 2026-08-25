@@ -1,0 +1,484 @@
+{
+  "name": "checkpoint1_Ronald_FerreiraStrinatti",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "1e9db6ce-426d-418c-af5e-8437586a9b8d",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -544,
+        272
+      ],
+      "id": "8d60211d-6522-4c28-938a-621de6462585",
+      "name": "Inicio Chat2",
+      "webhookId": "1e9db6ce-426d-418c-af5e-8437586a9b8d"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1741cb09-294f-496b-8417-0eec3cb46353",
+              "leftValue": "={{ $json.body.Mensaje }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -224,
+        272
+      ],
+      "id": "c5b2259d-2e01-4576-a8b1-277c5632f23e",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.Mensaje }}",
+                    "rightValue": "pedido",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    },
+                    "id": "23386e3f-de24-4958-88d8-fb77e69cda39"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Pedido"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "493ba135-b3e8-4426-b69b-e4d04e952a0f",
+                    "leftValue": "={{ $json.body.Mensaje }}",
+                    "rightValue": "precio",
+                    "operator": {
+                      "type": "string",
+                      "operation": "contains"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Precio"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        64,
+        144
+      ],
+      "id": "fed1d58f-00ea-4db8-afca-0d651ba4b4cd",
+      "name": "Switch3"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"output\": \"Hola, gracias por comunicarte con nosotros, ¿cuál es el número de tu pedido o tu nombre y apellido?\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        400,
+        0
+      ],
+      "id": "0d598487-8e97-4697-81bd-9d1b39f1b460",
+      "name": "Respond to Webhook14"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"output\": \"Hola, gracias por escribirnos. Aquí están los precios de nuestros productos.\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        400,
+        144
+      ],
+      "id": "b6c30386-0066-4c9b-9bdd-e63502cc2326",
+      "name": "Respond to Webhook15"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.Mensaje }}",
+        "options": {
+          "systemMessage": "Eres un asistente de atención al cliente amable y profesional. Tienes acceso a una base de datos de productos de Que Bazar con información detallada, precios y descripciones. Consulta esta información para responder preguntas de clientes de forma precisa y breve (máximo 2-3 oraciones). Si no tienes información, sé honesto.",
+          "maxIterations": 8
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        512,
+        320
+      ],
+      "id": "287a6188-70b8-4701-b8ac-5261410f383a",
+      "name": "AI Agent3",
+      "retryOnFail": true,
+      "notesInFlow": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-3.7-flash",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        464,
+        608
+      ],
+      "id": "ad55fe27-40e2-4bcc-8d07-b7f579c3665a",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "abWhysGaPngWqOTy",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Inicio Chat2').item.json.body.Numero }}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        688,
+        608
+      ],
+      "id": "1c0347d1-784f-475c-9bc2-20a9e8c73ee4",
+      "name": "Simple Memory3"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"output\": \"Disculpa, no recibí ningún mensaje. ¿En qué te puedo ayudar?\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -48,
+        544
+      ],
+      "id": "73f02544-c31c-4e16-81c7-f9be3d032f70",
+      "name": "Respond to Webhook16"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "https://docs.google.com/spreadsheets/d/15x9Ww26DXMnrBnJBQuN6guIW-zobgYqrVwd1S8AufuE/edit?gid=1947456262#gid=1947456262",
+          "__regex": "https:\\/\\/(?:drive|docs)\\.google\\.com(?:\\/.*|)\\/d\\/([0-9a-zA-Z\\-_]+)(?:\\/.*|)"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1947456262,
+          "mode": "list",
+          "cachedResultName": "productos_faq_clientes",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/15x9Ww26DXMnrBnJBQuN6guIW-zobgYqrVwd1S8AufuE/edit#gid=1947456262"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        896,
+        592
+      ],
+      "id": "a0d0d1c1-7287-4e23-a260-39920fb9cd98",
+      "name": "Get row(s) in sheet in Google Sheets2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ZSaNxlXWV2dWZARd",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { \"output\": $json.output } }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1008,
+        112
+      ],
+      "id": "79315dee-9b93-460e-a853-80a1eed3909f",
+      "name": "Respond to Webhook17"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"output\": \"Perdón, tuve un problema para procesar tu consulta. ¿Podés reformularla?\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        1056,
+        368
+      ],
+      "id": "77cee499-1b8c-4f8b-aac5-623ca34ed995",
+      "name": "Respond to Webhook18"
+    },
+    {
+      "parameters": {
+        "sendTo": "contacto@quebazar.com.ar",
+        "subject": "Atención con el flujo",
+        "emailType": "text",
+        "message": "Revisar que el flujo esta generando un error",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1280,
+        368
+      ],
+      "id": "af687702-5a49-49bd-93d9-cd15fa064a6b",
+      "name": "Send a message1",
+      "webhookId": "f7c328fd-24a5-48fe-8512-8d9cad6556a6",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "oCAnYeAMz2Vi7daA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Comienza recibiendo un mensaje externo, si esta vacio el mensaje responde que el mensaje esta vacio, sino continua para ver las opciones, si tiene la palabra precio o pedido junto a una respuesta.",
+        "height": 304,
+        "width": 448,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -128,
+        -96
+      ],
+      "typeVersion": 1,
+      "id": "50ad68b3-55f6-4cfe-82d2-e946fe4dfa4e",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "El agente revisa una base de dato para dar una respuesta al cliente",
+        "height": 176,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        288,
+        448
+      ],
+      "typeVersion": 1,
+      "id": "a3cc230b-71ea-442b-9963-890a1340edf6",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "En caso de errores se envia un mensaje a quien mantiene el sistema"
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1216,
+        144
+      ],
+      "typeVersion": 1,
+      "id": "6eadc1ab-6afd-4c40-81ed-23027ccbb0e0",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Inicio Chat2": {
+      "main": [
+        [
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        [
+          {
+            "node": "Switch3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook16",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch3": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook14",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook15",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI Agent3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent3": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook17",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook18",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory3": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets2": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent3",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Respond to Webhook18": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e3cfa84a-5456-463d-be24-21e5e3a10037",
+  "meta": {
+    "instanceId": "22f1e15e4dbaaa7b300a0573d44dc418ea2af777a65c41ffff3f80f192919f65"
+  },
+  "nodeGroups": [],
+  "id": "4ZHhjNqTgkTEsnRe",
+  "tags": []
+}
